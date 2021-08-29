@@ -1,3 +1,4 @@
+#Data source: https://www.kaggle.com/rashikrahmanpritom/heart-attack-analysis-prediction-dataset
 import os
 #Python version
 import sys
@@ -28,7 +29,7 @@ print('seaborn: {}'.format(sns.__version__))
 #Establish Visualization Theme with seaborn
 sns.set_theme(style="whitegrid")
 
-#Obtain workding directory
+#Obtain working directory
 print(os.getcwd())
 
 #Import Data and Show Columns
@@ -87,10 +88,13 @@ sex = df['sex'].value_counts()
 sex.plot(kind='bar')
 plt.show()
 
+#There are more men than women being represented in the data set
+
 sex = df['output'].value_counts()
 sex.plot(kind='bar')
 plt.show()
-                   
+#There are more individuals who are prone to heart attack than not
+
 #Visualizations of continuous variables
 
 sns.histplot(data = df, x = 'age')
@@ -112,26 +116,42 @@ plt.show()
 sns.scatterplot(data = df, x='trtbps', y='thalachh')
 plt.show()
 
+#Development of machine learning classification model
+
+#Converting data to numpy array for input to machine learning algorithm,
+#where X constitutes features and y is output (target variable)
 X = df.iloc[:, :-1].values
 y = df.iloc[:, -1].values
 
+#Splitting data into training and testing data sets
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
+#Standardizing features to ensure they're all on the same scale
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
+#Training the SVM model on the training set
 from sklearn.svm import SVC
 classifier = SVC(kernel = 'linear', random_state = 0, C = 2)
 classifier.fit(X_train, y_train)
 
+#Predicting the results from the test set argument
 y_pred = classifier.predict(X_test)
 
+#Implementation of the Confusion Matrix
 from sklearn.metrics import confusion_matrix, accuracy_score
 cm = confusion_matrix(y_test, y_pred)
+#Accuracy Prediction
 print(cm)
 print(accuracy_score(y_test, y_pred))
+#SVM algorithm yields an accuracy score of 86%, which is greater than
+#80% and an adequate baseline for most classification issues. SVM was
+#chosen over tree-based algorithms as they perform better than those
+#types in classification problems with unknown data structures and large
+#number of features, due to the kernel trick
+
 
 
